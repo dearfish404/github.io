@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+  <meta charset="UTF-8">
+  <title>我的梦幻天气星空</title>
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      background: linear-gradient(to bottom right, #6A5ACD, #FF69B4);
+      color: white;
+      font-family: 'Segoe UI', sans-serif;
+      overflow: hidden;
+    }
+
+    h1 {
+      text-align: center;
+      margin-top: 40px;
+      font-size: 2.5em;
+      text-shadow: 1px 1px 3px black;
+    }
+
+    #time, #weather {
+      text-align: center;
+      font-size: 1.5em;
+      margin: 20px;
+    }
+
+    .star {
+      position: absolute;
+      background: white;
+      border-radius: 50%;
+      width: 4px;
+      height: 4px;
+      animation: floatStars 10s linear infinite;
+    }
+
+    @keyframes floatStars {
+      0% {
+        top: 100vh;
+        opacity: 1;
+      }
+      100% {
+        top: -10px;
+        left: calc(100% * var(--rand));
+        opacity: 0;
+      }
+    }
+  </style>
+</head>
+<body>
+  <h1>天气 · 时间 · 星空</h1>
+  <div id="time">加载时间中...</div>
+  <div id="weather">加载天气中...</div>
+
+  <script>
+    // 时间显示
+    function updateTime() {
+      const now = new Date();
+      document.getElementById("time").textContent = "当前时间：" + now.toLocaleString();
+    }
+    setInterval(updateTime, 1000);
+
+    // 天气显示（需要填写你的 API key 和城市名）替换这段代码里的 "你的APIKEY" 为你在 OpenWeatherMap 上申请的真实 API key
+
+    fetch("https://api.openweathermap.org/data/2.5/weather?q=Beijing&appid=你的APIKEY&units=metric&lang=zh_cn")
+      .then(res => res.json())
+      .then(data => {
+        const temp = data.main.temp;
+        const desc = data.weather[0].description;
+        document.getElementById("weather").textContent = `北京天气：${desc}，${temp}℃`;
+      })
+      .catch(() => {
+        document.getElementById("weather").textContent = "天气获取失败，请检查 API key 和网络设置";
+      });
+
+    // 星星生成动画
+    for (let i = 0; i < 60; i++) {
+      const star = document.createElement("div");
+      star.classList.add("star");
+      star.style.left = Math.random() * window.innerWidth + "px";
+      star.style.top = Math.random() * window.innerHeight + "px";
+      star.style.setProperty("--rand", Math.random());
+      document.body.appendChild(star);
+    }
+  </script>
+</body>
+</html>
